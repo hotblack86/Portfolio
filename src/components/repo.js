@@ -1,22 +1,20 @@
 import React from 'react';
+import logo from '../images/GitHub32px.png';
 
-const Repo = ({title, language, created_at, url}) => {
-
-  
+const Repo = ({title, description, language, updated_at, url}) => {
 
   return(
-    <div >
-      <a 
+    <div>
+      <h3>{title}</h3><a
         href={url}
         target="_blank" 
         rel="noopener noreferrer"
-        style={{
-          color: `green`,
-          textDecoration: 'none',
-        }}
-        >{title}</a>
+        ><img src={logo} alt="" style={{
+          display: 'flex'
+        }}/></a>
+      <p>{description}</p>
       <p>Language: {language}</p>
-      <p>Created on: {created_at}</p>
+      <p>Last updated: {updated_at}</p>
       ~~~
     </div>
   )

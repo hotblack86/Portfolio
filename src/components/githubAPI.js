@@ -1,5 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import Repo from './repo'
+import SearchForm from './searchForm';
 
 const GithubAPI = () => {
   
@@ -15,14 +16,15 @@ const GithubAPI = () => {
   const getRepos = async () => {
     let url
     if (query !== "") { 
-      url = `https://api.github.com/search/repositories?q=${query}+in:name+user:hotblack86`
+      url = `https://api.github.com/search/repositories?q=${query}+in:name+user:hotblack86&sort=updated`
     } else { 
-      url = "https://api.github.com/users/hotblack86/repos?per_page=100";
+      url = "https://api.github.com/users/hotblack86/repos?per_page=100&sort=updated";
     }
 
     const response = await fetch(url);
     const data = await response.json();
     (query !== "") ? setRepos(data.items) : setRepos(data);
+    console.log(data)
   }
 
   const updateSearch = e => {
@@ -35,30 +37,33 @@ const GithubAPI = () => {
     setSearch('');
   }
 
+  // const sortByDate = e => {
+  //   e.preventDefault();
+  //   const sortedByDate = repos.slice().sort((a, b) => {
+  //     return a.created_at - b.created_at;
+  //   });
+  //   setRepos(sortedByDate);
+  //   console.log(repos)
+  // }
+
   return (
     <div className="githubAPI">
+      <SearchForm 
+        search={search}
+        getSearch={getSearch}
+        updateSearch={updateSearch}
+      />
 
-      <form onSubmit={getSearch} className="search-form">
-       <input 
-          className="search-bar" 
-          type="text" 
-          value={search} 
-          onChange={updateSearch}
-       />
-       <button className="title" type="submit">
-         Search
-       </button>
-      </form>
-
-      <p className="title">Showing {repos.length} results for "{query}"</p>
+      <p className="title">Showing {repos.length} results for "{query}"  ~  Ordered by most recently updated</p>
 
       {repos.map(repo => (
        <Repo 
        key={repo.id}
        url={repo.html_url}
        title={repo.name}
+       description={repo.description}
        language={repo.language}
-       created_at={repo.created_at}
+       updated_at={repo.updated_at}
        />
      ))}
     </div>
